@@ -1,0 +1,6 @@
+.idea
+*.iml
+/bigdata_application/target
+*.properties
+out
+gen
