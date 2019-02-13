@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+    <context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+    <!--<context id="Mysql" targetRuntime="MyBatis3" defaultModelType="flat">-->
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+
+        <plugin type="com.threeeye.expends.mybatis.generator.MapperPlugin">
+            <property name="mappers" value="com.threeeye.framework.dao.MyMapper"/>
+
+            <!--<property name="commentGenerator" value="com.sunmnet.framework.mybatis.comment.MybatisCommentGenerator"/>-->
+        </plugin>
+
+        <!-- 这里的type里写的是你的实现类的类全路径 -->
+        <commentGenerator type="com.threeeye.expends.mybatis.comment.MybatisCommentGenerator" >
+            <property name="suppressAllComments" value="false"/>
+            <!--<property name="suppressDate" value="true"/>-->
+        </commentGenerator>
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://127.0.0.1:3306/honey_bee?useSSL=false"
+                        userId="root"
+                        password="123456">
+        </jdbcConnection>
+
+        <!--<javaModelGenerator targetPackage="com.sunmnet.basedata.model" targetProject="D:\sunmnet_work_new\xnykdx\BigData.XNYKDX.WEB\sunmnet-basedata\sunmnet-basedata-model\src/main/java"/>-->
+        <javaModelGenerator targetPackage="com.threeeye.demo.api.domain" targetProject="../api-domain/src/main/java" >
+            <!--<property name="immutable" value="true"/>-->
+            <property name="rootClass" value="com.threeeye.framework.domain.BaseModel"/>
+            <property name="trimStrings" value="true" />
+            <property name="constructorBased" value="true" />
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="mybatis.api" targetProject="src/main/resources"/>
+
+        <javaClientGenerator targetPackage="com.threeeye.demo.api.dao" targetProject="src/main/java"
+                             type="XMLMAPPER"/>
+        <table tableName="%">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true" />
+        </table>
+        <!--<table tableName="%" >-->
+        <!--&lt;!&ndash;mysql 配置&ndash;&gt;-->
+        <!--<generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
+        <!--</table>-->
+        <!--<table tableName="sys_resource" domainObjectName="Resource">-->
+            <!--&lt;!&ndash;mysql 配置&ndash;&gt;-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
+        <!--</table>-->
+        <!--<table tableName="sys_resource_action" domainObjectName="ResourceAction">-->
+            <!--&lt;!&ndash;mysql 配置&ndash;&gt;-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
+        <!--</table>-->
+        <!--<table tableName="sys_account" domainObjectName="Account">-->
+            <!--&lt;!&ndash;mysql 配置&ndash;&gt;-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
+        <!--</table>-->
+
+        <!--<table tableName="sys_role" domainObjectName="Role">-->
+            <!--&lt;!&ndash;mysql 配置&ndash;&gt;-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
+        <!--</table>-->
+
+        <!--<table tableName="sys_account_role" domainObjectName="AccountRole">-->
+            <!--&lt;!&ndash;mysql 配置&ndash;&gt;-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
+        <!--</table>-->
+
+        <!--<table tableName="sys_role_resource" domainObjectName="RoleResource">-->
+            <!--&lt;!&ndash;mysql 配置&ndash;&gt;-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
+        <!--</table>-->
+
+
+        <!--<table tableName="analysis_audit_teacher_info" domainObjectName="AnalysisAuditTeacherInfo">-->
+            <!--&lt;!&ndash;mysql 配置&ndash;&gt;-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
+        <!--</table>-->
+
+    </context>
+</generatorConfiguration>

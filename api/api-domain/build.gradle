@@ -1,0 +1,7 @@
+dependencies {
+
+
+    
+    compile "com.threeeye:expands-api:$frameworkVersion"
+    compile ("com.threeeye:framework-controller:$frameworkVersion")
+}

@@ -1,0 +1,22 @@
+apply plugin: 'com.arenagod.gradle.MybatisGenerator'
+
+configurations { 
+  mybatisGenerator
+}
+
+mybatisGenerator { 
+  verbose = true
+  configFile = 'src/main/resources/generator/generatorConfig.xml'
+}
+
+dependencies {
+
+  compile "com.threeeye:expands-sqlMapper:$frameworkVersion"
+  compile 'mysql:mysql-connector-java:5.1.40'
+
+  mybatisGenerator 'org.mybatis.generator:mybatis-generator-core:1.3.5'
+  mybatisGenerator 'mysql:mysql-connector-java:5.1.40'
+  mybatisGenerator 'tk.mybatis:mapper:3.3.9'
+  mybatisGenerator "com.threeeye:expands-swagger:$frameworkVersion"
+  compile project(':api:api-domain')
+}

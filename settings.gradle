@@ -1,0 +1,12 @@
+rootProject.name = 'spring-demo'
+
+//数据源管理
+include 'demo-application'
+include 'api:api-controller'
+include 'api:api-domain'
+include 'api:api-service'
+
+
+
+
+

@@ -1,0 +1,222 @@
+
+apply plugin: 'java'
+//plugins {
+//    id "com.arenagod.gradle.MybatisGenerator" version "1.4"
+//}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+//删除父目录下的test，避免test task执行失败
+delete "${buildDir}/classes/test"
+
+//tasks.withType(JavaCompile) {
+//    options.encoding = "UTF-8"
+//}
+
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { url 'https://plugins.gradle.org/m2/'}
+        maven { url 'http://116.62.41.187:9002/nexus/content/groups/public/' }
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'http://repo.qtonecloud.cn/content/groups/public/' }
+        jcenter()
+        maven { url "http://repo.spring.io/snapshot" }
+        maven { url "http://repo.spring.io/milestone" }
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:$springbootVersion")
+        classpath 'cn.thinkjoy.gradle.plugins:gradle-gitflow-plugin:1.0.1+'
+        classpath "gradle.plugin.com.arenagod.gradle:mybatis-generator-plugin:1.4"
+        classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.4'
+        classpath 'org.hibernate.build.gradle:gradle-maven-publish-auth:2.0.1+'
+    }
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
+}
+
+project.configurations.all {
+    resolutionStrategy {
+        cacheChangingModulesFor 0, 'seconds'
+        cacheDynamicVersionsFor 0, 'seconds'
+        resolutionRules.with {
+            eachModule({ moduleResolve ->
+                if (moduleResolve.request.version.endsWith('-SNAPSHOT')) {
+                    // This will cause the dependency to be refreshed once per build execution
+                    moduleResolve.cacheFor(0, SECONDS)
+                    // This would cause the dependency to be refreshed once per sub-project in a multi-project build. You wouldn't normally want that.
+                    // moduleResolve.refresh()
+                }
+            } as Action)
+            eachArtifact({ artifactResolve ->
+                if (artifactResolve.request.moduleVersionIdentifier.version.endsWith('-SNAPSHOT')) {
+                    artifactResolve.cacheFor(0, SECONDS)
+                }
+            } as Action)
+        }
+    }
+}
+
+/** 此闭包内的声明子类皆可使用 */
+allprojects {
+    group 'com.threeeye'
+    version '1.0-SNAPSHOT'
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
+    apply plugin: 'maven-publish'
+    apply plugin: 'maven-publish-auth'
+
+    repositories {
+        mavenLocal()
+        repositories { maven { url 'http://116.62.41.187:9002/nexus/content/groups/public/' } }
+        mavenCentral()
+
+    }
+
+    publishing {
+        task sourceJar(type: Jar) {
+            classifier = 'sources'
+            from sourceSets.main.allSource
+        }
+
+        publications {
+            mavenJava(MavenPublication) { from components.java }
+            mavenJava(MavenPublication) {
+                artifact(sourceJar) {
+                    classifier = "sources"
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                name = 'thinkjoy'
+                url "http://repo.qtonecloud.cn/content/repositories/${project.version.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases'}"
+            }
+        }
+    }
+
+
+}
+
+//拷贝根目录下的所有test到各自子module下
+task "copytest" << {
+    def fromPath
+    def toPath
+    subprojects.each {
+        fromPath = "${project.buildDir}/classes/test/${it.name}"
+        toPath = "${it.buildDir}/classes/test"
+
+        copy {
+            from fromPath
+            into toPath
+        }
+
+    }
+}
+
+task createREADME() {
+    file("README.md").createNewFile()
+}
+
+subprojects {
+
+
+    configurations {
+        provided
+        compile.extendsFrom provided
+
+        all*.exclude group: 'org.springframework', module: 'spring'
+        all*.exclude group: 'asm', module: 'asm'
+        all*.exclude group: 'log4j', module: 'log4j'
+        all*.exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+        all*.exclude group: "org.hibernate", module: "hibernate-validator"
+    }
+
+
+
+    dependencies {
+        compile("org.springframework.boot:spring-boot-starter-web:$springbootVersion")
+                {
+                    exclude group: "org.hibernate", module: "hibernate-validator"
+                }
+//        testCompile("junit:junit:4.11")
+//        compile group: "org.springframework.boot",name:"spring-boot-starter-actuator",version: "$springbootVersion", changing: true
+//        compile "org.springframework.cloud:spring-cloud-starter-zookeeper-config:$springCloudZookeeperVersion"
+
+    }
+}
+
+configure(subprojects.findAll { it.name.contains('-service') }) {
+    task createMain() {
+        /** 填充文件，便于git提交 */
+        file("src/main/java").mkdirs()
+        file("src/main/resources").mkdirs()
+        if(!file("build.gradle").exists()){
+            file("build.gradle").createNewFile()
+            file("build.gradle").withPrintWriter {
+                out ->
+                    out.println("apply plugin: 'com.arenagod.gradle.MybatisGenerator'")
+                    out.println("")
+                    out.println("configurations { ")
+                    out.println("  mybatisGenerator")
+                    out.println("}")
+                    out.println("")
+                    out.println("mybatisGenerator { ")
+                    out.println("  verbose = true")
+                    out.println("  configFile = 'src/main/resources/generator/generatorConfig.xml'")
+                    out.println("}")
+                    out.println("")
+                    out.println("dependencies {")
+                    out.println("")
+                    out.println("")
+                    out.println("}")
+
+            }
+        }
+        
+        file("README.md").createNewFile()
+    }
+    
+}
+
+configure(subprojects.findAll { it.name.contains('-') && !it.name.contains('-service') && !it.name.contains('gather-honey') }) {
+    task createMain() {
+        /** 填充文件，便于git提交 */
+        file("src/main/java").mkdirs()
+        if(!file("build.gradle").exists()){
+            file("build.gradle").withPrintWriter {
+                out ->
+                    out.println("dependencies {")
+                    out.println("")
+                    out.println("")
+                    out.println("}")
+
+            }
+        }
+        file("README.md").createNewFile()
+    }
+}
+
+configure(subprojects.findAll { it.name.contains('application') }) {
+    task createResource() {
+        /** 填充文件，便于git提交 */
+        file("src/main/resources").mkdirs()
+    }
+}
+
+configure(subprojects.findAll {  it.name.contains('-test') && !it.name.contains('drift-')}) {
+    task createResource() {
+        /** 填充文件，便于git提交 */
+        file("src/test/java").mkdirs()
+    }
+}
+
+
+
+

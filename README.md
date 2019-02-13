@@ -1,4 +1,5 @@
-# spring-demo
-sample
-api统一接口demo
-sql不放在xml中的查询demo
+# bee
+图表展示系统
+
+1.数据源配置，菜单配置。页面配置，接口配置。
+
