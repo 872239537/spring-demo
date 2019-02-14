@@ -39,7 +39,7 @@ public class AlarmController extends BaseController {
     @ApiOperation(value = "测试获取Element")
     @ResponseBody
     @RequestMapping(value = "/getBeeElement", method = {RequestMethod.GET})
-    public JsonResult<BeeElement> getBeeElement(){
-        return buildSuccJson( goodsService.getBeeElement());
+    public BeeElement getBeeElement(){
+        return goodsService.getBeeElement();
     }
 }

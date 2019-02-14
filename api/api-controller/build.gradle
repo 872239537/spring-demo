@@ -1,4 +1,4 @@
 dependencies {
-    
+    compile "com.threeeye:expands-protocol:$frameworkVersion"
     compile project(':api:api-service')
 }
