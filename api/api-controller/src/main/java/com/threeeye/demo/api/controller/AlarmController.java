@@ -6,13 +6,15 @@ import com.threeeye.demo.service.GoodsServiceImpl;
 import com.threeeye.expands.api.APIMapping;
 import com.threeeye.framework.controller.BaseController;
 import com.threeeye.framework.domain.JsonResult;
+import com.threeeye.framework.exception.PlatformException;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-//@Api(value = "预警处理控制器API",tags = {"预警处理","查询统计预警相关"})
+@Api(value = "预警处理控制器API",tags = {"预警处理","查询统计预警相关"})
 @RestController
 @RequestMapping(value = "/alarm")
 public class AlarmController extends BaseController {
@@ -37,9 +39,17 @@ public class AlarmController extends BaseController {
 
     @APIMapping("getBeeElement")
     @ApiOperation(value = "测试获取Element")
-    @ResponseBody
     @RequestMapping(value = "/getBeeElement", method = {RequestMethod.GET})
-    public BeeElement getBeeElement(){
+    public BeeElement getBeeElement() throws PlatformException {
+        try {
+//            throw new PlatformException(HbtErrMsgEnum.NUMBER_NULL);
+            String h = "1";
+            if(!h.equals("2")){
+                throw new PlatformException(HbtErrMsgEnum.NUMBER_NULL);
+            }
+        }catch (Exception ex){
+            throw new PlatformException(HbtErrMsgEnum.NUMBER_NULL);
+        }
         return goodsService.getBeeElement();
     }
 }

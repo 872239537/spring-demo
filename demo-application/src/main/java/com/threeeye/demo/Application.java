@@ -30,7 +30,7 @@ import java.util.List;
 @SpringBootApplication
 @EnableAspectJAutoProxy
 @EnableAsync
-@ComponentScan(basePackages = "com.threeeye.demo")
+@ComponentScan(basePackages = {"com.threeeye.demo","com.threeeye.framework.exception.handler"})
 public class Application extends WebMvcConfigurerAdapter implements CommandLineRunner {
     private Logger logger = LoggerFactory.getLogger(Application.class);
 
