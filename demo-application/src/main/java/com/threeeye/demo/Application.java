@@ -65,12 +65,6 @@ public class Application extends WebMvcConfigurerAdapter implements CommandLineR
     @Bean
     public ExtFastJsonHttpMessageConverter fastJsonHttpMessageConverter(){
         ExtFastJsonHttpMessageConverter fastJsonHttpMessageConverter = new ExtFastJsonHttpMessageConverter();
-//        List<MediaType> mediaTypes = new ArrayList<>();
-//        mediaTypes.add(new MediaType("application/json; charset=utf-8"));
-//        fastJsonHttpMessageConverter.setSupportedMediaTypes(mediaTypes);
-//        SerializerFeature features = SerializerFeature.DisableCircularReferenceDetect;
-//        fastJsonHttpMessageConverter.setFeatures(features);
-
         return fastJsonHttpMessageConverter;
     }
 }
